@@ -22,6 +22,7 @@ def train_one_epoch(
     header = f"Epoch: [{epoch}]"
     print_freq = 100
 
+    flag=True
     model.train()
     data_loader.set_epoch(epoch)
     num_updates = epoch * len(data_loader)
@@ -32,7 +33,9 @@ def train_one_epoch(
         with amp_autocast():
             seg_pred = model.forward(im)
             loss = criterion(seg_pred, seg_gt)
-
+            if flag:
+                print(im.shape, seg_pred.shape, seg_gt.shape)
+                flag=False
         loss_value = loss.item()
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value), force=True)
